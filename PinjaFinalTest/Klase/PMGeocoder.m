@@ -8,7 +8,9 @@
 
 #import "PMGeocoder.h"
 
-@implementation PMGeocoder
+@implementation PMGeocoder {
+    BOOL _initialValuesSet;
+}
 
 - (instancetype)init
 {
@@ -18,6 +20,12 @@
         [self setResponseSerializer:[AFJSONResponseSerializer serializer]];
     }
     return self;
+}
+
++ (void)setGeocoderUsername:(NSString *)user andPassword:(NSString *)password {
+    PMGeocoder * private = [self privateImpl];
+    private->_initialValuesSet = YES;
+    [private.requestSerializer setAuthorizationHeaderFieldWithUsername:user password:password];
 }
 
 + (PMGeocoder *)privateImpl {
@@ -32,6 +40,11 @@
 
 + (void)reverseGeocodeData:(PMGeocoderData *)data withResponse:(PMGeocoderDataResponse)response {
     PMGeocoder * selfImpl = [self privateImpl];
+    
+    if (!selfImpl->_initialValuesSet) {
+        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Did not set username and password. Use setGeocoderUsername:andPassword: to set it up." userInfo:nil];
+        return;
+    }
     
     NSDictionary * d = @{@"lat" : [NSNumber numberWithFloat:data.latitude],
                          @"lon" :[NSNumber numberWithFloat:data.longitude]};
