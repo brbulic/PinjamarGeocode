@@ -7,6 +7,7 @@
 //
 
 #import "PMViewController.h"
+#import "PMGeocoder.h"
 
 @interface PMViewController ()
 
@@ -18,6 +19,14 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
+    
+#warning neki podaci umisto ovog nil
+    
+    [PMGeocoder reverseGeocodeData:nil withResponse:^(NSString *address, NSError *error) {
+        
+#warning NEKI REZULTAT
+        
+    }];
 }
 
 - (void)didReceiveMemoryWarning
